@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Halli Galli</string>
+
+    <!-- Main -->
+    <string name="play">Play</string>
+    <string name="settings">Settings</string>
+
+    <!-- Settings -->
+    <string name="sounds">Sounds</string>
+    <string name="vibrations">Vibrations</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="easy">easy</string>
+    <string name="hard">hard</string>
+
+    <!-- Game -->
+
 </resources>
