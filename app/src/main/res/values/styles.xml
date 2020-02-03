@@ -6,8 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorMain">@color/colorPrimaryDark</item>
-        <item name="colorMainContrast">@color/colorPrimary</item>
+        <item name="colorMain">@color/colorPrimary</item>
+        <item name="colorMainContrast">@color/colorPrimaryDark</item>
         <item name="colorBorder">@color/colorBorder</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="background">@drawable/background</item>
