@@ -6,8 +6,21 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorMain">@color/colorPrimary</item>
-        <item name="colorMainContrast">@color/colorPrimaryDark</item>
+        <item name="colorMain">@color/colorPrimaryDark</item>
+        <item name="colorMainContrast">@color/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="background">@drawable/background</item>
+    </style>
+
+    <!-- Main -->
+    <style name="MainItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/main_item_box</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:minHeight">30dip</item>
+        <item name="android:textSize">30sp</item>
     </style>
 
     <!-- attributes -->
