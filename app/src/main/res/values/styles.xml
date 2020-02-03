@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorMain">@color/colorPrimaryDark</item>
         <item name="colorMainContrast">@color/colorPrimary</item>
+        <item name="colorBorder">@color/colorBorder</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="background">@drawable/background</item>
     </style>
@@ -26,6 +27,7 @@
     <!-- attributes -->
     <attr name="colorMain" format="color"/>
     <attr name="colorMainContrast" format="color"/>
+    <attr name="colorBorder" format="color"/>
     <attr name="iconA" format="reference"/>
     <attr name="iconB" format="reference"/>
     <attr name="iconC" format="reference"/>
