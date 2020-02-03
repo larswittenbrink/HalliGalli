@@ -6,6 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorMain">@color/colorPrimary</item>
+        <item name="colorMainContrast">@color/colorPrimaryDark</item>
     </style>
 
+    <!-- attributes -->
+    <attr name="colorMain" format="color"/>
+    <attr name="colorMainContrast" format="color"/>
+    <attr name="iconA" format="reference"/>
+    <attr name="iconB" format="reference"/>
+    <attr name="iconC" format="reference"/>
+    <attr name="iconD" format="reference"/>
+    <attr name="background" format="reference"/>
 </resources>
