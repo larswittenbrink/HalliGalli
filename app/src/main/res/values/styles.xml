@@ -12,6 +12,7 @@
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textColor">?attr/colorMainContrast</item>
         <item name="background">@drawable/background</item>
+        <item name="bell">@drawable/bell_states</item>
     </style>
     <style name="MainThemeDark" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -20,10 +21,11 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorMain">@color/colorPrimaryDark</item>
         <item name="colorMainContrast">@color/colorPrimary</item>
-        <item name="colorBorder">@color/colorBorder</item>
+        <item name="colorBorder">@color/colorBorderDark</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textColor">?attr/colorMainContrast</item>
         <item name="background">@drawable/background</item>
+        <item name="bell">@drawable/bell_states</item>
     </style>
 
     <!-- Main -->
@@ -69,4 +71,5 @@
     <attr name="iconC" format="reference"/>
     <attr name="iconD" format="reference"/>
     <attr name="background" format="reference"/>
+    <attr name="bell" format="reference"/>
 </resources>
