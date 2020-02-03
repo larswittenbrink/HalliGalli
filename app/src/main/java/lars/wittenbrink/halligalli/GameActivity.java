@@ -75,7 +75,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.exitMessage)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()

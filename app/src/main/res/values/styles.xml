@@ -61,7 +61,11 @@
     </style>
 
     <!-- Game -->
-
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorPrimary">?attr/colorMainContrast</item>
+        <item name="android:background">?attr/colorMain</item>
+    </style>
     <!-- attributes -->
     <attr name="colorMain" format="color"/>
     <attr name="colorMainContrast" format="color"/>
