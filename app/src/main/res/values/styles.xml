@@ -30,11 +30,14 @@
 
     <!-- Main -->
     <style name="MainItem">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/main_item_box</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginStart">32dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:minHeight">30dip</item>
         <item name="android:textSize">30sp</item>
     </style>
