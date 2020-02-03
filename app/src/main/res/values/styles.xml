@@ -24,6 +24,29 @@
         <item name="android:textSize">30sp</item>
     </style>
 
+    <!-- Settings -->
+    <style name="SettingsEntry">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+    <style name="SettingsTextView" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="SettingsSwitch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_weight">0</item>
+    </style>
+
+    <!-- Game -->
+
     <!-- attributes -->
     <attr name="colorMain" format="color"/>
     <attr name="colorMainContrast" format="color"/>
