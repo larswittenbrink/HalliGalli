@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,11 +32,6 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
 
     //Deklaration anderer Variablen
-    private final int ONE_ICON = 5;
-    private final int TWO_ICON = 3;
-    private final int THREE_ICON = 3;
-    private final int FOUR_ICON = 2;
-    private final int FIVE_ICON = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,5 +84,30 @@ public class GameActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.no, null)
                 .show();
+    }
+
+    public static List<Card> createCards(){
+        List<Card> cards = new LinkedList<>();
+        for (FruitIcon fruitIcon : FruitIcon.values()) {
+            for (FruitNumber fruitNumber:FruitNumber.values()) {
+                for (int i = 0; i < fruitNumber.getNumber(); i++) {
+                    cards.add(new Card(fruitIcon, fruitNumber));
+                }
+            }
+        }
+        return cards;
+    }
+
+    public static List<Card> mixCards(List<Card> cards){
+        Collections.shuffle(cards);
+        return cards;
+    }
+
+    public static void main(String[] args) {
+        List<Card> cards = mixCards(createCards());
+        for (Card card : cards) {
+            System.out.println(card.getFruitIcon() + " " + card.getFruitNumber());
+        }
+        System.out.println(cards.size());
     }
 }
