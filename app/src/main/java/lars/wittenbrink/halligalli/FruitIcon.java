@@ -1,5 +1,5 @@
 package lars.wittenbrink.halligalli;
 
-public enum Icons {
+public enum FruitIcon {
     ICONA, ICONB, ICONC, ICOND
 }
