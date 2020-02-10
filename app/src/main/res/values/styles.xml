@@ -13,10 +13,10 @@
         <item name="android:textColor">?attr/colorMainContrast</item>
         <item name="background">@drawable/background</item>
         <item name="bell">@drawable/bell_states</item>
-        <item name="iconA">@drawable/apple</item>
+        <item name="iconA">@drawable/blueberry</item>
         <item name="iconB">@drawable/pear</item>
-        <item name="iconC">@drawable/orange</item>
-        <item name="iconD">@drawable/lemon</item>
+        <item name="iconC">@drawable/cherry</item>
+        <item name="iconD">@drawable/watermelon</item>
     </style>
     <style name="MainThemeDark" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -30,6 +30,10 @@
         <item name="android:textColor">?attr/colorMainContrast</item>
         <item name="background">@drawable/background</item>
         <item name="bell">@drawable/bell_states</item>
+        <item name="iconA">@drawable/blueberry</item>
+        <item name="iconB">@drawable/pear</item>
+        <item name="iconC">@drawable/cherry</item>
+        <item name="iconD">@drawable/watermelon</item>
     </style>
 
     <!-- Main -->
