@@ -1,6 +1,7 @@
 package lars.wittenbrink.halligalli;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -27,6 +30,9 @@ public class GameActivity extends AppCompatActivity {
     //Deklaration der SharedPreferences
     private SharedPreferences sharedPreferences;
 
+    //Deklaration des GesturesDetector
+    private GestureDetectorCompat gestureDetectorCompat;
+
     //Deklaration des Vibrators und des MediaPlayers
     private Vibrator vibrator;
     private MediaPlayer mediaPlayer;
@@ -44,6 +50,9 @@ public class GameActivity extends AppCompatActivity {
         //Initialisierung der SharedPreferences
         sharedPreferences = getSharedPreferences("settings", 0);
 
+        //Initialisierung des GesturesDetector
+        gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
+
         //Initialisierung des Vibrators und des MediaPlayers
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mediaPlayer = MediaPlayer.create(this, R.raw.ring);
@@ -58,12 +67,11 @@ public class GameActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(sharedPreferences.getBoolean("sounds", false))
+                if (sharedPreferences.getBoolean("sounds", false))
                     mediaPlayer.start();
-                if(sharedPreferences.getBoolean("vibrations", false))
+                if (sharedPreferences.getBoolean("vibrations", false))
                     vibrator.vibrate(100);
-
-                Toast toast=Toast.makeText(getApplicationContext(),"Difficulty: " + sharedPreferences.getInt("difficulty", 0),Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Difficulty: " + sharedPreferences.getInt("difficulty", 0), Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
@@ -74,8 +82,7 @@ public class GameActivity extends AppCompatActivity {
         new AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setTitle(R.string.exit)
                 .setMessage(R.string.exitMessage)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -86,10 +93,37 @@ public class GameActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static List<Card> createCards(){
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.gestureDetectorCompat.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            int[] point = new int[2];
+            findViewById(R.id.layoutGame).getLocationOnScreen(point);
+            int y = point[1];
+            int length = findViewById(R.id.layoutGame).getHeight();
+                if(e1.getY() > y && e1.getY() < y+(length/4) && e2.getY() > y && e2.getY() < y+(length/4)){
+                    (Toast.makeText(getApplicationContext(), "aa", Toast.LENGTH_SHORT)).show();
+
+                }
+                else if(e1.getY() > (y + 3*(length/4)) && e1.getY() < y+length && e2.getY() > (y + 3*(length/4)) && e2.getY() < y+length){
+                    (Toast.makeText(getApplicationContext(), "bb", Toast.LENGTH_SHORT)).show();
+
+                }
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+    }
+
+
+
+    public static List<Card> createCards() {
         List<Card> cards = new LinkedList<>();
         for (FruitIcon fruitIcon : FruitIcon.values()) {
-            for (FruitNumber fruitNumber:FruitNumber.values()) {
+            for (FruitNumber fruitNumber : FruitNumber.values()) {
                 for (int i = 0; i < fruitNumber.getNumber(); i++) {
                     cards.add(new Card(fruitIcon, fruitNumber));
                 }
@@ -98,7 +132,7 @@ public class GameActivity extends AppCompatActivity {
         return cards;
     }
 
-    public static List<Card> mixCards(List<Card> cards){
+    public static List<Card> mixCards(List<Card> cards) {
         Collections.shuffle(cards);
         return cards;
     }
