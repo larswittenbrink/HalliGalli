@@ -1,6 +1,6 @@
 package lars.wittenbrink.halligalli;
 
-public class Card {
+public final class Card {
     private FruitIcon fruitIcon;
     private FruitNumber fruitNumber;
 
