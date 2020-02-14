@@ -11,6 +11,6 @@ public class Bot extends User implements IBot{
 
     @Override
     public int getDifficulty() {
-        return 0;
+        return difficulty;
     }
 }

@@ -106,7 +106,6 @@ public class GameActivity extends AppCompatActivity {
         player25 = findViewById(R.id.player25);
 
         //Karten zuweisen
-       distributeCards(mixCards(createCards()));
         refreshUI();
     player1.setOnTurn(true);
 
@@ -234,32 +233,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-    public List<Card> createCards() {
-        List<Card> cards = new LinkedList<>();
-        for (FruitIcon fruitIcon : FruitIcon.values()) {
-            for (FruitNumber fruitNumber : FruitNumber.values()) {
-                for (int i = 0; i < fruitNumber.getNumber(); i++) {
-                    cards.add(new Card(fruitIcon, fruitNumber));
-                }
-            }
-        }
-        return cards;
-    }
-
-    public List<Card> mixCards(List<Card> cards) {
-        Collections.shuffle(cards);
-        return cards;
-    }
-
-    public void distributeCards(List<Card> cards) {
-        while (!cards.isEmpty()) {
-            player1.addClosedCard(cards.get(cards.size() - 1));
-            cards.remove(cards.size() - 1);
-            player2.addClosedCard(cards.get(cards.size() - 1));
-            cards.remove(cards.size() - 1);
-        }
-    }
 
     public void refreshUI() {
         player11.setImageDrawable(null);
