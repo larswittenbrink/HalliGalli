@@ -28,7 +28,7 @@ public class GameController {
         }
         printCards();
         System.out.println();
-        revealAllCards();
+        coverAllCards();
         printCards();
     }
 
@@ -47,6 +47,36 @@ public class GameController {
         }
     }
 
+
+
+    public void printCards(){
+        for (User user:users) {
+            System.out.println(user.getClosedCards().size());
+        }
+    }
+
+    public void move(){
+        if (!actualUser.getClosedCards().isEmpty())
+        actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
+    }
+
+    public void coverAllCards(){
+        for (User user:users) {
+            while(!user.getOpenedCards().isEmpty()){
+                user.getClosedCards().add(user.getOpenedCards().pop());
+            }
+        }
+    }
+
+    public boolean allCardsOpen(){
+        boolean allCardsOpen = true;
+        for (User user:users) {
+            if(!user.getClosedCards().isEmpty()) allCardsOpen = false;
+        }
+        return allCardsOpen;
+    }
+
+    //Cards
     public List<Card> createCards() {
         List<Card> cards = new LinkedList<>();
         for (FruitIcon fruitIcon : FruitIcon.values()) {
@@ -73,33 +103,6 @@ public class GameController {
                 }
             }
         }
-    }
-
-    public void printCards(){
-        for (User user:users) {
-            System.out.println(user.getClosedCards().size());
-        }
-    }
-
-    public void move(){
-        if (!actualUser.getClosedCards().isEmpty())
-        actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
-    }
-
-    public void revealAllCards(){
-        for (User user:users) {
-            while(!user.getOpenedCards().isEmpty()){
-                user.getClosedCards().add(user.getOpenedCards().pop());
-            }
-        }
-    }
-
-    public boolean allCardsOpen(){
-        boolean allCardsOpen = true;
-        for (User user:users) {
-            if(!user.getClosedCards().isEmpty()) allCardsOpen = false;
-        }
-        return allCardsOpen;
     }
 
     public static void main(String[] args) {
