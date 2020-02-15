@@ -30,7 +30,6 @@ public class GameController {
 
         for (int i = 0; i < 60; i++) {
             move(actualUser);
-            selectNextUser();
         }
 
 
@@ -61,7 +60,7 @@ public class GameController {
         actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
 
         if(allCardsOpen()) coverAllCards();
-
+        selectNextUser();
     }
 
     public void coverAllCards(){
