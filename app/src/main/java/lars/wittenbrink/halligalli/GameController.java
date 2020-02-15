@@ -15,21 +15,29 @@ public class GameController {
 
     public GameController() {
         users = new ArrayList<>();
-        addUser(new Bot("Hubert", 6));
-        addUser(new User("HH"));
-        addUser(new User("ff"));
+        addUser(new Bot("Alfred", 6));
+        addUser(new User("Felix"));
+        addUser(new User("Lars"));
+
         distributeCards(mixCards(createCards()));
-        actualUser = users.get(0);
-        printCards();
+
+        for (User user:users) {
+            print(user);
+        }
         System.out.println();
+
+        actualUser = users.get(0);
+
         for (int i = 0; i < 60; i++) {
-            move();
+            move(actualUser);
             selectNextUser();
         }
-        printCards();
+
+
+        for (User user:users) {
+            print(user);
+        }
         System.out.println();
-        coverAllCards();
-        printCards();
     }
 
     public void addUser(User user){
@@ -48,22 +56,23 @@ public class GameController {
     }
 
 
-
-    public void printCards(){
-        for (User user:users) {
-            System.out.println(user.getClosedCards().size());
-        }
-    }
-
-    public void move(){
-        if (!actualUser.getClosedCards().isEmpty())
+    public void move(User user){
+        if (!actualUser.getClosedCards().isEmpty() && user == actualUser)
         actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
+
+        if(allCardsOpen()) coverAllCards();
+
     }
 
     public void coverAllCards(){
         for (User user:users) {
-            while(!user.getOpenedCards().isEmpty()){
-                user.getClosedCards().add(user.getOpenedCards().pop());
+            List<Card> cards = new LinkedList<>();
+            while (!user.getOpenedCards().isEmpty()) {
+                cards.add(user.getOpenedCards().pop());
+            }
+            cards = mixCards(cards);
+            for (Card card : cards) {
+                user.getClosedCards().add(card);
             }
         }
     }
@@ -97,19 +106,30 @@ public class GameController {
     public void distributeCards(List<Card> cards) {
         while (!cards.isEmpty()) {
             for (User user : users) {
-                if(!cards.isEmpty()){
+                if (!cards.isEmpty()) {
                     user.getClosedCards().add(cards.get(0));
                     cards.remove(0);
+                } else {
+                    return;
                 }
             }
         }
     }
 
+
+
+    public void print(User user){
+        System.out.println(user.getOpenedCards().size() + " " + user.getClosedCards().size());
+    }
+    public void printCards(User user){
+        for (Card card:user.getClosedCards()) {
+            System.out.println(card.getFruitIcon().toString() + card.getFruitNumber().toString());
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
         new GameController();
     }
-
-
-
 
 }
