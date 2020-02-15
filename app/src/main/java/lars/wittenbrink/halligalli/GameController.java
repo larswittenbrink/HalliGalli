@@ -61,6 +61,10 @@ public class GameController {
 
         if(allCardsOpen()) coverAllCards();
         selectNextUser();
+        
+        if(actualUser instanceof Bot){
+            // TODO: 15.02.2020 nach einer zufälligen Zeit Karte aufdecken 
+        }
     }
 
     public void coverAllCards(){
