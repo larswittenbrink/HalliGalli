@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Stack;
 
 import lars.wittenbrink.halligalli.user.Bot;
 import lars.wittenbrink.halligalli.user.User;
@@ -12,12 +15,15 @@ public class GameController {
 
     private List<User> users;
     private User actualUser;
+    private final Random random;
+
+    //Random (Math.abs(i-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100))
 
     public GameController() {
         users = new ArrayList<>();
-        addUser(new Bot("Alfred", 6));
-        addUser(new User("Felix"));
-        addUser(new User("Lars"));
+        random = new Random();
+        addUser(new Bot("Alfred", 100));
+        addUser(new Bot("Felix", 50));
 
         distributeCards(mixCards(createCards()));
 
@@ -27,18 +33,24 @@ public class GameController {
         System.out.println();
 
         actualUser = users.get(0);
-
-        for (int i = 0; i < 60; i++) {
+        if(actualUser instanceof Bot){
             move(actualUser);
         }
 
+        Scanner scanner = new Scanner(System.in);
 
-        for (User user:users) {
-            print(user);
+
+        while(true){
+
+            while(!scanner.hasNext()){}
+            if(scanner.nextLine().equals("n")) move(actualUser);
         }
-        System.out.println();
+
+
     }
 
+    // TODO: 16.02.2020   Was passiert mit Spielern die verloren haben??
+    
     public void addUser(User user){
         users.add(user);
     }
@@ -54,29 +66,82 @@ public class GameController {
         }
     }
 
+    public void press(User user){
+        if (fiveFruitsOpen()){
+            for (User user1:users) {
+                coverCards(user1, user);
+            }
+        } else {
+            for (User user1:users) {
+                if(user1 != user){
+                    if(!user.getClosedCards().isEmpty()) {
+                        user1.getClosedCards().add(user.getClosedCards().poll());
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public boolean fiveFruitsOpen(){
+        for (FruitIcon fruitIcon:FruitIcon.values()) {
+            int anz = 0;
+            for (User user : users) {
+                if(!user.getOpenedCards().isEmpty()) {
+                    if (user.getOpenedCards().peek().getFruitIcon() == fruitIcon){
+                        anz += user.getOpenedCards().peek().getFruitNumber().getValue();
+                    }
+                }
+            }
+            if(anz == 5) return true;
+        }
+        return false;
+    }
+
+    public void coverCards(User user, User toUser){
+        List<Card> cards = new LinkedList<>();
+        while (!user.getOpenedCards().isEmpty()) {
+            cards.add(user.getOpenedCards().pop());
+        }
+        cards = mixCards(cards);
+        for (Card card : cards) {
+            toUser.getClosedCards().add(card);
+        }
+    }
 
     public void move(User user){
         if (!actualUser.getClosedCards().isEmpty() && user == actualUser)
         actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
 
-        if(allCardsOpen()) coverAllCards();
+        if(allCardsOpen()){
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            coverAllCards();
+        }
         selectNextUser();
-        
+//Tessst
+        for (User user1:users) {
+            print(user1);
+        }
+        System.out.println();
+
         if(actualUser instanceof Bot){
-            // TODO: 15.02.2020 nach einer zufälligen Zeit Karte aufdecken 
+            try {
+                Thread.sleep((Math.abs(((Bot) actualUser).getDifficulty()-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100)));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            move(actualUser);
         }
     }
 
     public void coverAllCards(){
         for (User user:users) {
-            List<Card> cards = new LinkedList<>();
-            while (!user.getOpenedCards().isEmpty()) {
-                cards.add(user.getOpenedCards().pop());
-            }
-            cards = mixCards(cards);
-            for (Card card : cards) {
-                user.getClosedCards().add(card);
-            }
+            coverCards(user, user);
         }
     }
 
@@ -134,5 +199,4 @@ public class GameController {
     public static void main(String[] args) {
         new GameController();
     }
-
 }
