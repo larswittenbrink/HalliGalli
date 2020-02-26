@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
 
-import lars.wittenbrink.halligalli.Card;
+import lars.wittenbrink.halligalli.cards.Card;
 
 public class User implements IUser {
 

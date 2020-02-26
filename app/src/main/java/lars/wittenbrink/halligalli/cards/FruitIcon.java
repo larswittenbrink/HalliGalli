@@ -1,4 +1,6 @@
-package lars.wittenbrink.halligalli;
+package lars.wittenbrink.halligalli.cards;
+
+import lars.wittenbrink.halligalli.R;
 
 public enum FruitIcon {
     ICONA(R.attr.iconA), ICONB(R.attr.iconB), ICONC(R.attr.iconC), ICOND(R.attr.iconD);

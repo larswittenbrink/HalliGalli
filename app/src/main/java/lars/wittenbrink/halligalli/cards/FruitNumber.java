@@ -1,4 +1,4 @@
-package lars.wittenbrink.halligalli;
+package lars.wittenbrink.halligalli.cards;
 
 public enum FruitNumber {
     ONE(1, 5), TWO(2, 3), THREE(3, 3), FOUR(4, 2), FIVE(5, 1);

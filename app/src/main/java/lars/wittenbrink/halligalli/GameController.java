@@ -6,8 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Stack;
 
+import lars.wittenbrink.halligalli.cards.Card;
+import lars.wittenbrink.halligalli.cards.Cards;
+import lars.wittenbrink.halligalli.cards.FruitIcon;
+import lars.wittenbrink.halligalli.cards.FruitNumber;
 import lars.wittenbrink.halligalli.user.Bot;
 import lars.wittenbrink.halligalli.user.User;
 
@@ -25,7 +28,7 @@ public class GameController {
         addUser(new Bot("Alfred", 100));
         addUser(new Bot("Felix", 50));
 
-        distributeCards(mixCards(createCards()));
+        Cards.distributeCards(Cards.mixCards(Cards.createCards()), users);
 
         for (User user:users) {
             print(user);
@@ -80,8 +83,37 @@ public class GameController {
                 }
             }
         }
+    }
 
 
+    public void move(User user){
+        if (!actualUser.getClosedCards().isEmpty() && user == actualUser)
+        actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
+
+        if(allCardsOpen()){
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            coverAllCards();
+        }
+        selectNextUser();
+
+//Tessst
+        for (User user1:users) {
+            print(user1);
+        }
+        System.out.println();
+
+        if(actualUser instanceof Bot){
+            try {
+                Thread.sleep((Math.abs(((Bot) actualUser).getDifficulty()-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100)));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            move(actualUser);
+        }
     }
 
     public boolean fiveFruitsOpen(){
@@ -104,38 +136,9 @@ public class GameController {
         while (!user.getOpenedCards().isEmpty()) {
             cards.add(user.getOpenedCards().pop());
         }
-        cards = mixCards(cards);
+        cards = Cards.mixCards(cards);
         for (Card card : cards) {
             toUser.getClosedCards().add(card);
-        }
-    }
-
-    public void move(User user){
-        if (!actualUser.getClosedCards().isEmpty() && user == actualUser)
-        actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
-
-        if(allCardsOpen()){
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            coverAllCards();
-        }
-        selectNextUser();
-//Tessst
-        for (User user1:users) {
-            print(user1);
-        }
-        System.out.println();
-
-        if(actualUser instanceof Bot){
-            try {
-                Thread.sleep((Math.abs(((Bot) actualUser).getDifficulty()-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100)));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            move(actualUser);
         }
     }
 
@@ -152,39 +155,6 @@ public class GameController {
         }
         return allCardsOpen;
     }
-
-    //Cards
-    public List<Card> createCards() {
-        List<Card> cards = new LinkedList<>();
-        for (FruitIcon fruitIcon : FruitIcon.values()) {
-            for (FruitNumber fruitNumber : FruitNumber.values()) {
-                for (int i = 0; i < fruitNumber.getNumber(); i++) {
-                    cards.add(new Card(fruitIcon, fruitNumber));
-                }
-            }
-        }
-        return cards;
-    }
-
-    public List<Card> mixCards(List<Card> cards) {
-        Collections.shuffle(cards);
-        return cards;
-    }
-
-    public void distributeCards(List<Card> cards) {
-        while (!cards.isEmpty()) {
-            for (User user : users) {
-                if (!cards.isEmpty()) {
-                    user.getClosedCards().add(cards.get(0));
-                    cards.remove(0);
-                } else {
-                    return;
-                }
-            }
-        }
-    }
-
-
 
     public void print(User user){
         System.out.println(user.getOpenedCards().size() + " " + user.getClosedCards().size());

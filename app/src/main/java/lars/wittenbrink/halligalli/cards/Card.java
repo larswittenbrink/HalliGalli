@@ -1,4 +1,4 @@
-package lars.wittenbrink.halligalli;
+package lars.wittenbrink.halligalli.cards;
 
 public final class Card {
     private FruitIcon fruitIcon;
