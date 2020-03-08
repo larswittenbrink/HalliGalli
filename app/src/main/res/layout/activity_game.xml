@@ -12,7 +12,7 @@
         android:id="@+id/imageButtonBell"
         android:layout_width="160dp"
         android:layout_height="160dp"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/middleMargin"
         android:adjustViewBounds="false"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"

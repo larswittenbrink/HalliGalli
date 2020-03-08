@@ -22,4 +22,6 @@
     <string name="player1">Player 1</string>
     <string name="player2">Player 2</string>
     <string name="bot">Bot</string>
+    <string name="confirm">Confirm</string>
+    <string name="darkmode">Dark Mode</string>
 </resources>

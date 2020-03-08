@@ -19,6 +19,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Initialisierung der SharedPreferences
+        sharedPreferences = getSharedPreferences("settings", 0);
+
+        if(sharedPreferences.getBoolean("darkmode", false)){
+            setTheme(R.style.MainThemeDark);
+        }else{
+            setTheme(R.style.MainTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -26,14 +36,11 @@ public class MainActivity extends AppCompatActivity {
         buttonPlay = findViewById(R.id.buttonPlay);
         buttonSettings = findViewById(R.id.buttonSettings);
 
-        //Initialisierung der SharedPreferences
-        sharedPreferences = getSharedPreferences("settings", 0);
-
         //Setzen der Listener für die View Objekte
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity( new Intent(MainActivity.this, GameActivity.class));
+                startActivity( new Intent(MainActivity.this, GameInitActivity.class));
             }
         });
         buttonSettings.setOnClickListener(new View.OnClickListener() {

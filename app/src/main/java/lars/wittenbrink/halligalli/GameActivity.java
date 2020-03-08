@@ -1,5 +1,6 @@
 package lars.wittenbrink.halligalli;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
@@ -7,27 +8,26 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import lars.wittenbrink.halligalli.user.*;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -44,9 +44,12 @@ public class GameActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private MediaPlayer mediaPlayer;
 
+    //Deklaration eines requestCode für die GameInit Activity
+    private static final int INPUT_ACTIVITY_RESULT = 149;
+
     //Deklaration anderer Variablen
-    private Player player1;
-    private Player player2;
+    private List<User> users = new LinkedList<>();
+    private GameController gameController;
 
     //Deklaration der Test Variablen
     private TextView player1openText;
@@ -67,14 +70,21 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Initialisierung der SharedPreferences
+        sharedPreferences = getSharedPreferences("settings", 0);
+
+        if(sharedPreferences.getBoolean("darkmode", false)){
+            setTheme(R.style.MainThemeDark);
+        }else{
+            setTheme(R.style.MainTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
         //Initialisierung der View Variablen
         imageButtonBell = findViewById(R.id.imageButtonBell);
-
-        //Initialisierung der SharedPreferences
-        sharedPreferences = getSharedPreferences("settings", 0);
 
         //Initialisierung des GestureDetector
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
@@ -83,11 +93,27 @@ public class GameActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mediaPlayer = MediaPlayer.create(this, R.raw.ring);
 
+        if(getIntent().getBooleanExtra("botPlayer1", false)){
+            users.add(new Bot(getIntent().getStringExtra("namePlayer1"), sharedPreferences.getInt("difficulty", 50)));
+        } else {
+            users.add(new User(getIntent().getStringExtra("namePlayer1")));
+        }
+        if(getIntent().getBooleanExtra("botPlayer2", false)){
+            users.add(new Bot(getIntent().getStringExtra("namePlayer2"), sharedPreferences.getInt("difficulty", 50)));
+        } else {
+            users.add(new User(getIntent().getStringExtra("namePlayer2")));
+        }
+
+
+
+/*
         //Initialisierung anderer Variablen
+        gameController = new GameController(users);
+
 
         //configuratePlayers();
-        player1 = new Player("lars", false);
-        player2 = new Player("hubddd", true);
+        //user1 = new User("Lars");
+        //user2 = new Bot(gameController, "Thorsten", 50);
 
         //Initialisierung der Test Variablen
         player1openText = findViewById(R.id.player1openText);
@@ -106,8 +132,8 @@ public class GameActivity extends AppCompatActivity {
         player25 = findViewById(R.id.player25);
 
         //Karten zuweisen
-        refreshUI();
-    player1.setOnTurn(true);
+        refreshUI();*/
+
 
         //Setzen der Listener für die View Objekte
         imageButtonBell.setOnClickListener(new View.OnClickListener() {
@@ -130,57 +156,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    // TODO: 11.02.2020 Methode beenden
-    public void configuratePlayers() {
-
-        //LinearLayout für die Zeilen
-        final LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setPadding((int) getResources().getDimension(R.dimen.AlertDialogPadding), 0, (int) getResources().getDimension(R.dimen.AlertDialogPadding), 0);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        //EditText für den Namen
-        final EditText input = new EditText(this);
-        input.setHint(R.string.name);
-        input.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(input);
-
-        final LinearLayout layout = new LinearLayout(this);
-        layout.setPadding((int) getResources().getDimension(R.dimen.AlertDialogPadding), 0, (int) getResources().getDimension(R.dimen.AlertDialogPadding), 0);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        final TextView textView = new TextView(this);
-        textView.setText(R.string.bot);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT,1f));
-        linearLayout.addView(textView);
-
-        final CheckBox checkBox = new CheckBox(this);
-        //checkBox.setText(R.string.bot);
-        checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT,0f));
-        checkBox.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        layout.addView(checkBox);
-        linearLayout.addView(layout);
-
-
-        new AlertDialog.Builder(this, R.style.AlertDialogStyle)
-                .setTitle(R.string.player1)
-                .setView(linearLayout)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (input.getText().toString().trim().equals(""))
-                            player1 = new Player(getResources().getString(R.string.player1), false);
-                        else
-                            player1 = new Player(input.getText().toString().trim(), false);
-                        Toast.makeText(getApplicationContext(),player1.getName(),Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
-
-
-    }
 
 
     @Override
@@ -191,7 +166,9 @@ public class GameActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
 
                 })
@@ -213,29 +190,19 @@ public class GameActivity extends AppCompatActivity {
             int y = point[1];
             int length = findViewById(R.id.layoutGame).getHeight();
             if (e1.getY() > y && e1.getY() < y + (length / 4) && e2.getY() > y && e2.getY() < y + (length / 4)) {
-                turn(player2);
+                // TODO: 01.03.2020 zug Spieler 2
                 refreshUI();
             } else if (e1.getY() > (y + 3 * (length / 4)) && e1.getY() < y + length && e2.getY() > (y + 3 * (length / 4)) && e2.getY() < y + length) {
-                turn(player1);
+                // TODO: 01.03.2020 zug Spieler 1
                 refreshUI();
             }
             return super.onFling(e1, e2, velocityX, velocityY);
         }
     }
 
-    public void turn(Player player) {
-
-        if(player.isOnTurn()) {
-            player.move();
-            //wenn der andere keine karten mehr hat nicht wechseln
-            player1.setOnTurn(!player1.isOnTurn());
-            player2.setOnTurn(!player2.isOnTurn());
-        }
-    }
-
 
     public void refreshUI() {
-        player11.setImageDrawable(null);
+        /*player11.setImageDrawable(null);
         player12.setImageDrawable(null);
         player13.setImageDrawable(null);
         player14.setImageDrawable(null);
@@ -285,7 +252,7 @@ public class GameActivity extends AppCompatActivity {
         player1closeText.setText(Integer.toString(player1.getClosedStack().size()));
         player1openText.setText(Integer.toString(player1.getOpenedStack().size()));
         player2closeText.setText(Integer.toString(player2.getClosedStack().size()));
-        player2openText.setText(Integer.toString(player2.getOpenedStack().size()));
+        player2openText.setText(Integer.toString(player2.getOpenedStack().size()));*/
     }
 
     //Methode, um die Ressourcen ID aus Attributen zu bekommen

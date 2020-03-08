@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Halli Galli</string>
+    <string name="play">Spielen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="sounds">Töne</string>
+    <string name="vibrations">Vibrationen</string>
+    <string name="difficulty">Schwierigkeit</string>
+    <string name="easy">einfach</string>
+    <string name="hard">schwer</string>
+    <string name="exit">Spiel verlassen</string>
+    <string name="no">Nein</string>
+    <string name="yes">Ja</string>
+    <string name="ok">Ok</string>
+    <string name="name">Name</string>
+    <string name="player1">Spieler 1</string>
+    <string name="player2">Spieler 2</string>
+    <string name="bot">Bot</string>
+    <string name="exitMessage">Sind sie sicher, dass sie das Spiel verlassen wollen?</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="darkmode">Dunkles Design</string>
+</resources>

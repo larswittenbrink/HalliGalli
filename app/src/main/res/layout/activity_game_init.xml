@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/background"
+    tools:context=".GameInitActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutPlayer1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/middleMargin"
+        android:background="@drawable/box"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/GameInitTextView"
+            android:text="@string/player1" />
+
+        <EditText
+            android:id="@+id/editTextPlayer1"
+            android:hint="@string/name"
+            android:maxLength="15"
+            android:inputType="textPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/middleMargin"
+            android:textColor="?attr/colorMainContrast"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout style="@style/SettingsEntry">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/middleMargin"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/bot"
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/checkBoxPlayer1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/middleMargin" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutPlayer2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/middleMargin"
+        android:background="@drawable/box"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutPlayer1">
+
+        <TextView
+            style="@style/GameInitTextView"
+            android:text="@string/player2" />
+
+        <EditText
+            android:id="@+id/editTextPlayer2"
+            android:hint="@string/name"
+            android:maxLength="15"
+            android:inputType="textPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/middleMargin"
+            android:textColor="?attr/colorMainContrast"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout style="@style/SettingsEntry">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/middleMargin"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/bot"
+                android:textSize="20sp" />
+
+            <CheckBox
+                android:id="@+id/checkBoxPlayer2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/middleMargin" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonConfirm"
+        android:layout_width="wrap_content"
+        android:padding="@dimen/smallMargin"
+        android:layout_height="wrap_content"
+        android:background="@drawable/box"
+        android:textAllCaps="false"
+        android:layout_margin="@dimen/middleMargin"
+        android:textSize="20sp"
+        android:text="@string/confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutPlayer2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

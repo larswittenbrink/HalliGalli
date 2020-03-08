@@ -2,6 +2,7 @@ package lars.wittenbrink.halligalli;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CompoundButton;
@@ -13,6 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
     //Deklaration der View Variablen
     private Switch switchSounds;
     private Switch switchVibrations;
+    private Switch switchDarkmode;
     private SeekBar seekBarDifficulty;
 
     //Deklaration der SharedPreferences und des SharedPreferences.Editor
@@ -22,21 +24,32 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Initialisierung der SharedPreferences und des SharedPreferences.Editor
+        sharedPreferences = getSharedPreferences("settings", 0);
+        sharedPreferencesEditor = sharedPreferences.edit();
+
+        if(sharedPreferences.getBoolean("darkmode", false)){
+            setTheme(R.style.MainThemeDark);
+        }else{
+            setTheme(R.style.MainTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         //Initialisierung der View Variablen
         switchSounds = findViewById(R.id.switchSounds);
         switchVibrations = findViewById(R.id.switchVibrations);
+        switchDarkmode = findViewById(R.id.switchDarkmode);
         seekBarDifficulty = findViewById(R.id.seekBarDifficulty);
 
-        //Initialisierung der SharedPreferences und des SharedPreferences.Editor
-        sharedPreferences = getSharedPreferences("settings", 0);
-        sharedPreferencesEditor = sharedPreferences.edit();
+
 
         //Setzen der View Objekte auf die gespeicherten Werte
         switchSounds.setChecked(sharedPreferences.getBoolean("sounds", false));
         switchVibrations.setChecked(sharedPreferences.getBoolean("vibrations", false));
+        switchDarkmode.setChecked(sharedPreferences.getBoolean("darkmode", false));
         seekBarDifficulty.setProgress(sharedPreferences.getInt("difficulty", 0));
 
         //Setzen der Listener für die View Objekte
@@ -52,6 +65,13 @@ public class SettingsActivity extends AppCompatActivity {
                 sharedPreferencesEditor.putBoolean("vibrations", isChecked);
             }
         }));
+        switchDarkmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                sharedPreferencesEditor.putBoolean("darkmode", isChecked);
+                recreate();
+            }
+        });
         seekBarDifficulty.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -69,6 +89,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

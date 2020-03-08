@@ -14,20 +14,26 @@ import lars.wittenbrink.halligalli.cards.FruitNumber;
 import lars.wittenbrink.halligalli.user.Bot;
 import lars.wittenbrink.halligalli.user.User;
 
+
 public class GameController {
 
     private List<User> users;
+    private List<User> losers;
     private User actualUser;
     private final Random random;
+    public static GameController INSTANCE;
 
     //Random (Math.abs(i-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100))
 
-    public GameController() {
-        users = new ArrayList<>();
+    public GameController(List<User> users) {
+        INSTANCE = this;
+        users = new LinkedList<>();
+        //users.add(new User("Alfred"));
+        users.add(new Bot("Dieter", 10));
+        users.add(new Bot("gg", 100));
+        this.users = users;
+        losers = new LinkedList<>();
         random = new Random();
-        addUser(new Bot("Alfred", 100));
-        addUser(new Bot("Felix", 50));
-
         Cards.distributeCards(Cards.mixCards(Cards.createCards()), users);
 
         for (User user:users) {
@@ -35,7 +41,7 @@ public class GameController {
         }
         System.out.println();
 
-        actualUser = users.get(0);
+        selectNextUser();
         if(actualUser instanceof Bot){
             move(actualUser);
         }
@@ -44,22 +50,24 @@ public class GameController {
 
 
         while(true){
-
             while(!scanner.hasNext()){}
             if(scanner.nextLine().equals("n")) move(actualUser);
         }
 
-
     }
 
     // TODO: 16.02.2020   Was passiert mit Spielern die verloren haben??
-    
-    public void addUser(User user){
-        users.add(user);
-    }
 
+    //wählt den nächsten Spieler aus, der noch nicht aufgedeckte Karten hat. Falls alle Karten aufgedeckt sind, werden alle wieder zugedeckt
     public void selectNextUser(){
-        if(!allCardsOpen()){
+
+        if(actualUser == null && !users.isEmpty()){
+            actualUser = users.get(0);
+        }
+        if(allCardsOpen()){
+            coverAllCards();
+            selectNextUser();
+        } else{
             if(users.indexOf(actualUser)+1 >= users.size()){
                 actualUser = users.get(0);
             } else {
@@ -70,6 +78,7 @@ public class GameController {
     }
 
     public void press(User user){
+
         if (fiveFruitsOpen()){
             for (User user1:users) {
                 coverCards(user1, user);
@@ -83,21 +92,30 @@ public class GameController {
                 }
             }
         }
+        if(actualUser instanceof Bot){
+            ((Bot) actualUser).getExecutorService().execute(((Bot) actualUser).getMoveThread());
+
+            //new Thread(((Bot) actualUser).getMoveThread()).start();
+
+            //((Bot) actualUser).getMoveThread().start();
+        }
     }
 
+    public void lose(User user){
+        if(user.getClosedCards().isEmpty() && user.getOpenedCards().isEmpty()){
+            if(user == actualUser) {
+                selectNextUser();
+            }
+                losers.add(user);
+                users.remove(user);
+        }
+    }
 
     public void move(User user){
-        if (!actualUser.getClosedCards().isEmpty() && user == actualUser)
-        actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
-
-        if(allCardsOpen()){
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            coverAllCards();
+        if (!actualUser.getClosedCards().isEmpty() && user == actualUser) {
+            actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
         }
+
         selectNextUser();
 
 //Tessst
@@ -106,14 +124,23 @@ public class GameController {
         }
         System.out.println();
 
-        if(actualUser instanceof Bot){
-            try {
-                Thread.sleep((Math.abs(((Bot) actualUser).getDifficulty()-100)*(new Random().nextInt(16)+15)+(new Random().nextInt(200)+100)));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if(fiveFruitsOpen()){
+            for(User user1: users){
+                if(user1 instanceof Bot){
+                    ((Bot) user1).getPressThread().start();
+                }
             }
-            move(actualUser);
         }
+
+        if(actualUser instanceof Bot){
+            ((Bot) actualUser).getExecutorService().execute(((Bot) actualUser).getMoveThread());
+
+            //new Thread(((Bot) actualUser).getMoveThread()).start();
+        }
+
+
+
+
     }
 
     public boolean fiveFruitsOpen(){
@@ -156,9 +183,20 @@ public class GameController {
         return allCardsOpen;
     }
 
+
+
     public void print(User user){
-        System.out.println(user.getOpenedCards().size() + " " + user.getClosedCards().size());
+        System.out.print(user.getOpenedCards().size() + " " + user.getClosedCards().size());
+
+        if(!user.getOpenedCards().isEmpty()){
+            System.out.print("   " + user.getOpenedCards().peek().getFruitIcon() +  user.getOpenedCards().peek().getFruitNumber());
+            System.out.println();
+        }
+        else {
+            System.out.println();
+        }
     }
+
     public void printCards(User user){
         for (Card card:user.getClosedCards()) {
             System.out.println(card.getFruitIcon().toString() + card.getFruitNumber().toString());
@@ -166,7 +204,8 @@ public class GameController {
         System.out.println();
     }
 
+
     public static void main(String[] args) {
-        new GameController();
+        new GameController(null);
     }
 }

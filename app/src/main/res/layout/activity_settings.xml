@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/middleMargin"
         android:background="@drawable/box"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,6 +41,18 @@
                 style="@style/SettingsSwitch" />
         </LinearLayout>
 
+        <LinearLayout style="@style/SettingsEntry">
+
+            <TextView
+                android:id="@+id/textViewDarkmode"
+                style="@style/SettingsTextView"
+                android:text="@string/darkmode"/>
+
+            <Switch
+                android:id="@+id/switchDarkmode"
+                style="@style/SettingsSwitch" />
+        </LinearLayout>
+
         <LinearLayout
             style="@style/SettingsEntry"
             android:orientation="vertical">
@@ -54,16 +66,16 @@
                 android:id="@+id/seekBarDifficulty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/middleMargin"
+                android:layout_marginEnd="@dimen/middleMargin"
                 android:max="100" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="@dimen/middleMargin"
+                android:layout_marginEnd="@dimen/middleMargin"
+                android:layout_marginBottom="@dimen/middleMargin"
                 android:orientation="horizontal">
 
                 <TextView
@@ -71,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textSize="@dimen/smallText"
                     android:text="@string/easy" />
 
                 <TextView
@@ -78,6 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textSize="@dimen/smallText"
                     android:text="@string/hard"
                     android:textAlignment="textEnd" />
             </LinearLayout>
