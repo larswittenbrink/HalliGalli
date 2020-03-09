@@ -10,12 +10,12 @@ import lars.wittenbrink.halligalli.game.cards.Card;
 public class User implements IUser {
 
     private String name;
-    private Stack<Card> openedCards;
-    private Queue<Card> closedCards;
+    private Deque<Card> openedCards;
+    private Deque<Card> closedCards;
 
     public User(String name) {
         this.name = name;
-        this.openedCards = new Stack<>();
+        this.openedCards = new ArrayDeque<>();
         this.closedCards = new ArrayDeque<>();
     }
 
@@ -26,12 +26,12 @@ public class User implements IUser {
     }
 
     @Override
-    public Stack<Card> getOpenedCards() {
+    public Deque<Card> getOpenedCards() {
         return openedCards;
     }
 
     @Override
-    public Queue<Card> getClosedCards() {
+    public Deque<Card> getClosedCards() {
         return closedCards;
     }
 }

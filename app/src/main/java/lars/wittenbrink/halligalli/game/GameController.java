@@ -23,6 +23,9 @@ public class GameController {
 
     public GameController(List<User> users) {
         INSTANCE = this;
+        users = new LinkedList<>();
+        users.add(new Bot("Test1", 100));
+        users.add(new Bot("Test2", 100));
         this.users = users;
         finishedUsers = new LinkedList<>();
         random = new Random();
@@ -71,7 +74,7 @@ public class GameController {
             for (User otherUser:users) {
                 if(otherUser != user){
                     if(!user.getClosedCards().isEmpty()) {
-                        otherUser.getClosedCards().add(user.getClosedCards().poll());
+                        otherUser.getClosedCards().addLast(user.getClosedCards().pollFirst());
                     }
                 }
             }
@@ -100,7 +103,7 @@ public class GameController {
 
     public void move(User user){
         if (!actualUser.getClosedCards().isEmpty() && user == actualUser) {
-            actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
+            actualUser.getOpenedCards().addFirst(actualUser.getClosedCards().pollFirst());
         }
         selectNextUser();
         if(users.size() == 1){
@@ -130,8 +133,8 @@ public class GameController {
             int anz = 0;
             for (User user : users) {
                 if(!user.getOpenedCards().isEmpty()) {
-                    if (user.getOpenedCards().peek().getFruitIcon() == fruitIcon){
-                        anz += user.getOpenedCards().peek().getFruitNumber().getValue();
+                    if (user.getOpenedCards().peekFirst().getFruitIcon() == fruitIcon){
+                        anz += user.getOpenedCards().peekFirst().getFruitNumber().getValue();
                     }
                 }
             }
@@ -143,11 +146,11 @@ public class GameController {
     public void coverCards(User user, User toUser){
         List<Card> cards = new LinkedList<>();
         while (!user.getOpenedCards().isEmpty()) {
-            cards.add(user.getOpenedCards().pop());
+            cards.add(user.getOpenedCards().pollFirst());
         }
         cards = Cards.mixCards(cards);
         for (Card card : cards) {
-            toUser.getClosedCards().add(card);
+            toUser.getClosedCards().addLast(card);
         }
     }
 
@@ -171,7 +174,7 @@ public class GameController {
         System.out.print(user.getName() + " " + user.getOpenedCards().size() + " " + user.getClosedCards().size());
 
         if(!user.getOpenedCards().isEmpty()){
-            System.out.print("   " + user.getOpenedCards().peek().getFruitIcon() + " " + user.getOpenedCards().peek().getFruitNumber());
+            System.out.print("   " + user.getOpenedCards().peekFirst().getFruitIcon() + " " + user.getOpenedCards().peekFirst().getFruitNumber());
         }
         System.out.println();
     }

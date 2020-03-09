@@ -32,7 +32,7 @@ public final class Cards {
         while (!cards.isEmpty()) {
             for (User user : users) {
                 if (!cards.isEmpty()) {
-                    user.getClosedCards().add(cards.get(0));
+                    user.getClosedCards().addLast(cards.get(0));
                     cards.remove(0);
                 } else {
                     return;
