@@ -1,10 +1,10 @@
-package lars.wittenbrink.halligalli.cards;
+package lars.wittenbrink.halligalli.game.cards;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import lars.wittenbrink.halligalli.user.User;
+import lars.wittenbrink.halligalli.game.user.User;
 
 public final class Cards {
     public Cards(){

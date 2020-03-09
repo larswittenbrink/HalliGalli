@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import lars.wittenbrink.halligalli.user.User;
-
 public class GameInitActivity extends AppCompatActivity {
 
     //Deklaration der View Variablen

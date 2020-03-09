@@ -1,6 +1,5 @@
 package lars.wittenbrink.halligalli;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
@@ -15,19 +14,18 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.TypedValue;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import lars.wittenbrink.halligalli.user.*;
+import lars.wittenbrink.halligalli.game.GameController;
+import lars.wittenbrink.halligalli.game.user.*;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -67,7 +65,8 @@ public class GameActivity extends AppCompatActivity {
     private ImageView player24;
     private ImageView player25;
 
-
+// TODO: 08.03.2020 Was wenn Users weg sind? 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -104,18 +103,10 @@ public class GameActivity extends AppCompatActivity {
             users.add(new User(getIntent().getStringExtra("namePlayer2")));
         }
 
-
-
-/*
         //Initialisierung anderer Variablen
         gameController = new GameController(users);
 
-
-        //configuratePlayers();
-        //user1 = new User("Lars");
-        //user2 = new Bot(gameController, "Thorsten", 50);
-
-        //Initialisierung der Test Variablen
+        /*//Initialisierung der Test Variablen
         player1openText = findViewById(R.id.player1openText);
         player1closeText = findViewById(R.id.player1closeText);
         player2openText = findViewById(R.id.player2openText);
@@ -130,9 +121,9 @@ public class GameActivity extends AppCompatActivity {
         player23 = findViewById(R.id.player23);
         player24 = findViewById(R.id.player24);
         player25 = findViewById(R.id.player25);
-
+*/
         //Karten zuweisen
-        refreshUI();*/
+        //refreshUI();
 
 
         //Setzen der Listener für die View Objekte
@@ -150,6 +141,7 @@ public class GameActivity extends AppCompatActivity {
                 if (sharedPreferences.getBoolean("vibrations", false))
                     vibrator.vibrate(200);
 
+                gameController.move(users.get(0));
             }
         });
 
@@ -190,10 +182,14 @@ public class GameActivity extends AppCompatActivity {
             int y = point[1];
             int length = findViewById(R.id.layoutGame).getHeight();
             if (e1.getY() > y && e1.getY() < y + (length / 4) && e2.getY() > y && e2.getY() < y + (length / 4)) {
-                // TODO: 01.03.2020 zug Spieler 2
+                if(users.get(1) instanceof User){
+                    gameController.move(users.get(1)); 
+                }
                 refreshUI();
             } else if (e1.getY() > (y + 3 * (length / 4)) && e1.getY() < y + length && e2.getY() > (y + 3 * (length / 4)) && e2.getY() < y + length) {
-                // TODO: 01.03.2020 zug Spieler 1
+                if(users.get(0) instanceof User){
+                    gameController.move(users.get(0));
+                }
                 refreshUI();
             }
             return super.onFling(e1, e2, velocityX, velocityY);

@@ -1,4 +1,4 @@
-package lars.wittenbrink.halligalli.cards;
+package lars.wittenbrink.halligalli.game.cards;
 
 import lars.wittenbrink.halligalli.R;
 

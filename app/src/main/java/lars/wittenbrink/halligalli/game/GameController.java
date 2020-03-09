@@ -1,24 +1,20 @@
-package lars.wittenbrink.halligalli;
+package lars.wittenbrink.halligalli.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
-import lars.wittenbrink.halligalli.cards.Card;
-import lars.wittenbrink.halligalli.cards.Cards;
-import lars.wittenbrink.halligalli.cards.FruitIcon;
-import lars.wittenbrink.halligalli.cards.FruitNumber;
-import lars.wittenbrink.halligalli.user.Bot;
-import lars.wittenbrink.halligalli.user.User;
+import lars.wittenbrink.halligalli.game.cards.Card;
+import lars.wittenbrink.halligalli.game.cards.Cards;
+import lars.wittenbrink.halligalli.game.cards.FruitIcon;
+import lars.wittenbrink.halligalli.game.user.Bot;
+import lars.wittenbrink.halligalli.game.user.User;
 
 
 public class GameController {
 
     private List<User> users;
-    private List<User> losers;
+    private List<User> finishedUsers;
     private User actualUser;
     private final Random random;
     public static GameController INSTANCE;
@@ -27,12 +23,8 @@ public class GameController {
 
     public GameController(List<User> users) {
         INSTANCE = this;
-        users = new LinkedList<>();
-        //users.add(new User("Alfred"));
-        users.add(new Bot("Dieter", 10));
-        users.add(new Bot("gg", 100));
         this.users = users;
-        losers = new LinkedList<>();
+        finishedUsers = new LinkedList<>();
         random = new Random();
         Cards.distributeCards(Cards.mixCards(Cards.createCards()), users);
 
@@ -42,21 +34,14 @@ public class GameController {
         System.out.println();
 
         selectNextUser();
+
         if(actualUser instanceof Bot){
             move(actualUser);
         }
 
-        Scanner scanner = new Scanner(System.in);
-
-
-        while(true){
-            while(!scanner.hasNext()){}
-            if(scanner.nextLine().equals("n")) move(actualUser);
-        }
-
     }
 
-    // TODO: 16.02.2020   Was passiert mit Spielern die verloren haben??
+
 
     //wählt den nächsten Spieler aus, der noch nicht aufgedeckte Karten hat. Falls alle Karten aufgedeckt sind, werden alle wieder zugedeckt
     public void selectNextUser(){
@@ -78,35 +63,37 @@ public class GameController {
     }
 
     public void press(User user){
-
         if (fiveFruitsOpen()){
-            for (User user1:users) {
-                coverCards(user1, user);
+            for (User otherUser:users) {
+                coverCards(otherUser, user);
             }
         } else {
-            for (User user1:users) {
-                if(user1 != user){
+            for (User otherUser:users) {
+                if(otherUser != user){
                     if(!user.getClosedCards().isEmpty()) {
-                        user1.getClosedCards().add(user.getClosedCards().poll());
+                        otherUser.getClosedCards().add(user.getClosedCards().poll());
                     }
                 }
             }
         }
+
+        for (User otherUser:users) {
+            if(otherUser.getOpenedCards().isEmpty() && otherUser.getClosedCards().isEmpty()){
+                finishUser(otherUser);
+            }
+        }
+
         if(actualUser instanceof Bot){
-            ((Bot) actualUser).getExecutorService().execute(((Bot) actualUser).getMoveThread());
-
-            //new Thread(((Bot) actualUser).getMoveThread()).start();
-
-            //((Bot) actualUser).getMoveThread().start();
+            ((Bot) actualUser).moveMethod();
         }
     }
 
-    public void lose(User user){
+    public void finishUser(User user){
         if(user.getClosedCards().isEmpty() && user.getOpenedCards().isEmpty()){
             if(user == actualUser) {
                 selectNextUser();
             }
-                losers.add(user);
+                finishedUsers.add(user);
                 users.remove(user);
         }
     }
@@ -115,32 +102,27 @@ public class GameController {
         if (!actualUser.getClosedCards().isEmpty() && user == actualUser) {
             actualUser.getOpenedCards().push(actualUser.getClosedCards().poll());
         }
-
         selectNextUser();
+        if(users.size() == 1){
+            finishUser(users.get(0));
+        }
 
-//Tessst
+
+        if(fiveFruitsOpen()){
+            for(User otherUser: users){
+                if(otherUser instanceof Bot){
+                    ((Bot) otherUser).pressMethod();
+                }
+            }
+        }
+        if(actualUser instanceof Bot){
+            ((Bot) actualUser).moveMethod();
+        }
+
         for (User user1:users) {
             print(user1);
         }
         System.out.println();
-
-        if(fiveFruitsOpen()){
-            for(User user1: users){
-                if(user1 instanceof Bot){
-                    ((Bot) user1).getPressThread().start();
-                }
-            }
-        }
-
-        if(actualUser instanceof Bot){
-            ((Bot) actualUser).getExecutorService().execute(((Bot) actualUser).getMoveThread());
-
-            //new Thread(((Bot) actualUser).getMoveThread()).start();
-        }
-
-
-
-
     }
 
     public boolean fiveFruitsOpen(){
@@ -186,24 +168,13 @@ public class GameController {
 
 
     public void print(User user){
-        System.out.print(user.getOpenedCards().size() + " " + user.getClosedCards().size());
+        System.out.print(user.getName() + " " + user.getOpenedCards().size() + " " + user.getClosedCards().size());
 
         if(!user.getOpenedCards().isEmpty()){
-            System.out.print("   " + user.getOpenedCards().peek().getFruitIcon() +  user.getOpenedCards().peek().getFruitNumber());
-            System.out.println();
-        }
-        else {
-            System.out.println();
-        }
-    }
-
-    public void printCards(User user){
-        for (Card card:user.getClosedCards()) {
-            System.out.println(card.getFruitIcon().toString() + card.getFruitNumber().toString());
+            System.out.print("   " + user.getOpenedCards().peek().getFruitIcon() + " " + user.getOpenedCards().peek().getFruitNumber());
         }
         System.out.println();
     }
-
 
     public static void main(String[] args) {
         new GameController(null);
