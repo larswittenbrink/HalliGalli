@@ -24,14 +24,14 @@ public class Bot extends User implements IBot{
     }
 
     @Override
-    public void moveMethod() {
+    public void move() {
         SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
             GameController.INSTANCE.move(this);
         }, getMoveDelay(difficulty), TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public void pressMethod() {
+    public void press() {
         SCHEDULED_EXECUTOR_SERVICE.schedule(() -> {
             if(GameController.INSTANCE.fiveFruitsOpen() || !randomBoolean(difficulty/100)){
                 GameController.INSTANCE.press(this);

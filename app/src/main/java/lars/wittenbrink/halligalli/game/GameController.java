@@ -23,9 +23,6 @@ public class GameController {
 
     public GameController(List<User> users) {
         INSTANCE = this;
-        users = new LinkedList<>();
-        users.add(new Bot("Test1", 100));
-        users.add(new Bot("Test2", 100));
         this.users = users;
         finishedUsers = new LinkedList<>();
         random = new Random();
@@ -87,7 +84,7 @@ public class GameController {
         }
 
         if(actualUser instanceof Bot){
-            ((Bot) actualUser).moveMethod();
+            ((Bot) actualUser).move();
         }
     }
 
@@ -108,18 +105,18 @@ public class GameController {
         selectNextUser();
         if(users.size() == 1){
             finishUser(users.get(0));
+            return;
         }
-
 
         if(fiveFruitsOpen()){
             for(User otherUser: users){
                 if(otherUser instanceof Bot){
-                    ((Bot) otherUser).pressMethod();
+                    ((Bot) otherUser).press();
                 }
             }
         }
         if(actualUser instanceof Bot){
-            ((Bot) actualUser).moveMethod();
+            ((Bot) actualUser).move();
         }
 
         for (User user1:users) {

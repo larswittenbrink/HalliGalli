@@ -17,6 +17,7 @@
         <item name="iconB">@drawable/pear</item>
         <item name="iconC">@drawable/cherry</item>
         <item name="iconD">@drawable/watermelon</item>
+        <item name="cardBackground">@drawable/card_background1</item>
     </style>
     <style name="MainThemeDark" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -34,6 +35,7 @@
         <item name="iconB">@drawable/pear</item>
         <item name="iconC">@drawable/cherry</item>
         <item name="iconD">@drawable/watermelon</item>
+        <item name="cardBackground">@drawable/card_background1</item>
     </style>
 
     <!-- Main -->
@@ -96,6 +98,7 @@
     <attr name="iconB" format="reference"/>
     <attr name="iconC" format="reference"/>
     <attr name="iconD" format="reference"/>
+    <attr name="cardBackground" format="reference"/>
     <attr name="background" format="reference"/>
     <attr name="bell" format="reference"/>
 </resources>

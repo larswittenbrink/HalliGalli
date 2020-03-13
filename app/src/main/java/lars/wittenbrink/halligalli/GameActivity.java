@@ -1,6 +1,7 @@
 package lars.wittenbrink.halligalli;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GestureDetectorCompat;
 
 import android.app.Activity;
@@ -9,6 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -16,6 +19,9 @@ import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,12 +31,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lars.wittenbrink.halligalli.game.GameController;
+import lars.wittenbrink.halligalli.game.cards.Card;
+import lars.wittenbrink.halligalli.game.cards.FruitIcon;
+import lars.wittenbrink.halligalli.game.cards.FruitNumber;
 import lars.wittenbrink.halligalli.game.user.*;
 
 public class GameActivity extends AppCompatActivity {
 
     //Deklaration der View Variablen
     private ImageButton imageButtonBell;
+    private FrameLayout openedCardPlayer1;
+    private FrameLayout openedCardPlayer2;
+    private FrameLayout closedCardPlayer1;
+    private FrameLayout closedCardPlayer2;
 
     //Deklaration der SharedPreferences
     private SharedPreferences sharedPreferences;
@@ -49,21 +62,6 @@ public class GameActivity extends AppCompatActivity {
     private List<User> users = new LinkedList<>();
     private GameController gameController;
 
-    //Deklaration der Test Variablen
-    private TextView player1openText;
-    private TextView player1closeText;
-    private TextView player2openText;
-    private TextView player2closeText;
-    private ImageView player11;
-    private ImageView player12;
-    private ImageView player13;
-    private ImageView player14;
-    private ImageView player15;
-    private ImageView player21;
-    private ImageView player22;
-    private ImageView player23;
-    private ImageView player24;
-    private ImageView player25;
 
 // TODO: 08.03.2020 Was wenn Users weg sind? 
     
@@ -73,17 +71,17 @@ public class GameActivity extends AppCompatActivity {
         //Initialisierung der SharedPreferences
         sharedPreferences = getSharedPreferences("settings", 0);
 
-        if(sharedPreferences.getBoolean("darkmode", false)){
-            setTheme(R.style.MainThemeDark);
-        }else{
-            setTheme(R.style.MainTheme);
-        }
+        setTheme(sharedPreferences.getInt("theme", R.style.MainTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
         //Initialisierung der View Variablen
         imageButtonBell = findViewById(R.id.imageButtonBell);
+        openedCardPlayer1 = findViewById(R.id.openedCardPlayer1);
+        openedCardPlayer2 = findViewById(R.id.openedCardPlayer2);
+        closedCardPlayer1 = findViewById(R.id.closedCardPlayer1);
+        closedCardPlayer2 = findViewById(R.id.closedCardPlayer2);
 
         //Initialisierung des GestureDetector
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
@@ -106,26 +104,7 @@ public class GameActivity extends AppCompatActivity {
         //Initialisierung anderer Variablen
         gameController = new GameController(users);
 
-        /*//Initialisierung der Test Variablen
-        player1openText = findViewById(R.id.player1openText);
-        player1closeText = findViewById(R.id.player1closeText);
-        player2openText = findViewById(R.id.player2openText);
-        player2closeText = findViewById(R.id.player2closeText);
-        player11 = findViewById(R.id.player11);
-        player12 = findViewById(R.id.player12);
-        player13 = findViewById(R.id.player13);
-        player14 = findViewById(R.id.player14);
-        player15 = findViewById(R.id.player15);
-        player21 = findViewById(R.id.player21);
-        player22 = findViewById(R.id.player22);
-        player23 = findViewById(R.id.player23);
-        player24 = findViewById(R.id.player24);
-        player25 = findViewById(R.id.player25);
-*/
-        //Karten zuweisen
-        //refreshUI();
-
-
+        refreshUI();
         //Setzen der Listener für die View Objekte
         imageButtonBell.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +121,7 @@ public class GameActivity extends AppCompatActivity {
                     vibrator.vibrate(200);
 
                 gameController.move(users.get(0));
+                refreshUI();
             }
         });
 
@@ -183,12 +163,14 @@ public class GameActivity extends AppCompatActivity {
             int length = findViewById(R.id.layoutGame).getHeight();
             if (e1.getY() > y && e1.getY() < y + (length / 4) && e2.getY() > y && e2.getY() < y + (length / 4)) {
                 if(users.get(1) instanceof User){
-                    gameController.move(users.get(1)); 
+                    gameController.move(users.get(1));
+                    refreshUI();
                 }
                 refreshUI();
             } else if (e1.getY() > (y + 3 * (length / 4)) && e1.getY() < y + length && e2.getY() > (y + 3 * (length / 4)) && e2.getY() < y + length) {
                 if(users.get(0) instanceof User){
                     gameController.move(users.get(0));
+                    refreshUI();
                 }
                 refreshUI();
             }
@@ -198,57 +180,80 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void refreshUI() {
-        /*player11.setImageDrawable(null);
-        player12.setImageDrawable(null);
-        player13.setImageDrawable(null);
-        player14.setImageDrawable(null);
-        player15.setImageDrawable(null);
-        player21.setImageDrawable(null);
-        player22.setImageDrawable(null);
-        player23.setImageDrawable(null);
-        player24.setImageDrawable(null);
-        player25.setImageDrawable(null);
+        openedCardPlayer1.removeAllViews();
+        openedCardPlayer2.removeAllViews();
+        closedCardPlayer1.removeAllViews();
+        closedCardPlayer2.removeAllViews();
 
-        if (player1.getOpenedCard() != null)
-            switch (player1.getOpenedCard().getFruitNumber()) {
+        if(users.get(0) != null ){
+                openedCardPlayer1.addView(createCard(users.get(0).getOpenedCards().peekFirst(), true, openedCardPlayer1.getHeight()));
+                closedCardPlayer1.addView(createCard(users.get(0).getClosedCards().peekFirst(), false, closedCardPlayer1.getHeight()));
+        }
+        if(users.get(0) != null ){
+            openedCardPlayer2.addView(createCard(users.get(1).getOpenedCards().peekFirst(), true, openedCardPlayer2.getHeight()));
+            closedCardPlayer2.addView(createCard(users.get(1).getClosedCards().peekFirst(), false, closedCardPlayer2.getHeight()));
+        }
+    }
+
+    public View createCard(Card card, boolean opened, int height) {
+        // View
+        View view = getLayoutInflater().inflate(R.layout.card,null);
+
+        if(card == null){
+            return view;
+        }
+
+        //Layout
+        ConstraintLayout layout = view.findViewById(R.id.cardLayout);
+        layout.setLayoutParams(new ConstraintLayout.LayoutParams(height/3*2, height));
+
+        //Shape für den Hintergrund
+        GradientDrawable shape = new GradientDrawable();
+        shape.setColor(getColorFromAttribute(this, R.attr.colorMain));
+        shape.setStroke((int)(height*0.006), getColorFromAttribute(this, R.attr.colorBorder));
+        shape.setCornerRadius(height * 0.08F);
+        layout.setBackground(shape);
+
+        if(opened) {
+            ImageView[] fruit = new ImageView[5];
+            fruit[0] = view.findViewById(R.id.fruit1);
+            fruit[1] = view.findViewById(R.id.fruit2);
+            fruit[2] = view.findViewById(R.id.fruit3);
+            fruit[3] = view.findViewById(R.id.fruit4);
+            fruit[4] = view.findViewById(R.id.fruit5);
+
+            for (ImageView imageView : fruit) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)(imageView.getLayoutParams());
+                params.height = (int) (height / 4.5);
+                params.width = (int) (height / 4.5);
+                params.leftMargin = (int) (height*0.04);
+                params.rightMargin = (int) (height*0.04);
+                params.topMargin = (int) (height*0.04);
+                params.bottomMargin = (int) (height*0.04);
+            }
+
+            switch (card.getFruitNumber()) {
                 case FIVE:
-                    player12.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
-                    player14.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
+                    fruit[0].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
+                    fruit[4].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
                 case THREE:
-                    player15.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
-                    player11.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
+                    fruit[1].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
+                    fruit[3].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
                 case ONE:
-                    player13.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
+                    fruit[2].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
                     break;
                 case FOUR:
-                    player12.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
-                    player14.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
+                    fruit[0].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
+                    fruit[4].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
                 case TWO:
-                    player11.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
-                    player15.setImageResource(getResIdFromAttribute(this, player1.getOpenedCard().getFruitIcon().getId()));
-            }
-        if (player2.getOpenedCard() != null)
-            switch (player2.getOpenedCard().getFruitNumber()) {
-                case FIVE:
-                    player22.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                    player24.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                case THREE:
-                    player25.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                    player21.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                case ONE:
-                    player23.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
+                    fruit[1].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
+                    fruit[3].setImageResource(getResIdFromAttribute(this, card.getFruitIcon().getId()));
                     break;
-                case FOUR:
-                    player22.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                    player24.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                case TWO:
-                    player21.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
-                    player25.setImageResource(getResIdFromAttribute(this, player2.getOpenedCard().getFruitIcon().getId()));
             }
-        player1closeText.setText(Integer.toString(player1.getClosedStack().size()));
-        player1openText.setText(Integer.toString(player1.getOpenedStack().size()));
-        player2closeText.setText(Integer.toString(player2.getClosedStack().size()));
-        player2openText.setText(Integer.toString(player2.getOpenedStack().size()));*/
+        } else{
+            layout.setForeground(this.getDrawable(R.drawable.card_background));
+        }
+        return view;
     }
 
     //Methode, um die Ressourcen ID aus Attributen zu bekommen
@@ -258,6 +263,14 @@ public class GameActivity extends AppCompatActivity {
         final TypedValue typedvalueattr = new TypedValue();
         activity.getTheme().resolveAttribute(attr, typedvalueattr, true);
         return typedvalueattr.resourceId;
+    }
+
+    public int getColorFromAttribute(final Activity activity, int attr){
+        if (attr == 0)
+            return 0;
+        TypedValue typedvalueattr = new TypedValue();
+        activity.getTheme().resolveAttribute(attr, typedvalueattr, true);
+        return typedvalueattr.data;
     }
 
 }

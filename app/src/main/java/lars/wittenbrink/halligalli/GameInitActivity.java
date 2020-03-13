@@ -30,11 +30,7 @@ public class GameInitActivity extends AppCompatActivity {
         //Initialisierung der SharedPreferences
         sharedPreferences = getSharedPreferences("settings", 0);
 
-        if(sharedPreferences.getBoolean("darkmode", false)){
-            setTheme(R.style.MainThemeDark);
-        }else{
-            setTheme(R.style.MainTheme);
-        }
+        setTheme(sharedPreferences.getInt("theme", R.style.MainTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_init);

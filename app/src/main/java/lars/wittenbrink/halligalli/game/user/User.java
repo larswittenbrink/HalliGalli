@@ -1,10 +1,8 @@
 package lars.wittenbrink.halligalli.game.user;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Queue;
-import java.util.Stack;
 
+import lars.wittenbrink.halligalli.game.MyDeque;
 import lars.wittenbrink.halligalli.game.cards.Card;
 
 public class User implements IUser {
@@ -15,8 +13,8 @@ public class User implements IUser {
 
     public User(String name) {
         this.name = name;
-        this.openedCards = new ArrayDeque<>();
-        this.closedCards = new ArrayDeque<>();
+        this.openedCards = new MyDeque<>();
+        this.closedCards = new MyDeque<>();
     }
 
 

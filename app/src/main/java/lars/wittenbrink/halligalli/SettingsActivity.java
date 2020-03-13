@@ -29,11 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("settings", 0);
         sharedPreferencesEditor = sharedPreferences.edit();
 
-        if(sharedPreferences.getBoolean("darkmode", false)){
-            setTheme(R.style.MainThemeDark);
-        }else{
-            setTheme(R.style.MainTheme);
-        }
+        setTheme(sharedPreferences.getInt("theme", R.style.MainTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
@@ -49,7 +45,11 @@ public class SettingsActivity extends AppCompatActivity {
         //Setzen der View Objekte auf die gespeicherten Werte
         switchSounds.setChecked(sharedPreferences.getBoolean("sounds", false));
         switchVibrations.setChecked(sharedPreferences.getBoolean("vibrations", false));
-        switchDarkmode.setChecked(sharedPreferences.getBoolean("darkmode", false));
+        if(sharedPreferences.getInt("theme", R.style.MainTheme) == R.style.MainThemeDark){
+            switchDarkmode.setChecked(true);
+        }else{
+            switchDarkmode.setChecked(false);
+        }
         seekBarDifficulty.setProgress(sharedPreferences.getInt("difficulty", 0));
 
         //Setzen der Listener für die View Objekte
@@ -68,7 +68,12 @@ public class SettingsActivity extends AppCompatActivity {
         switchDarkmode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sharedPreferencesEditor.putBoolean("darkmode", isChecked);
+                if(isChecked){
+                    sharedPreferencesEditor.putInt("theme", R.style.MainThemeDark);
+                }else {
+                    sharedPreferencesEditor.putInt("theme", R.style.MainTheme);
+                }
+
                 recreate();
             }
         });
